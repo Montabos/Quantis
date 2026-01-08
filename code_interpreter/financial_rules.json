@@ -1,0 +1,393 @@
+{
+  "document_types": {
+    "balance_sheet": {
+      "description": "Balance sheet with Assets and Liabilities",
+      "indicators": {
+        "required_columns": ["asset", "liability", "current_asset", "current_liability"],
+        "optional_columns": ["date", "period", "fixed_asset", "equity", "debt", "cash"],
+        "kpis": [
+          {
+            "name": "Working Capital",
+            "formula": "current_asset - current_liability",
+            "description": "Company's ability to meet short-term debts",
+            "unit": "$",
+            "priority": "high"
+          },
+          {
+            "name": "Liquidity Ratio",
+            "formula": "current_asset / current_liability",
+            "description": "Measures the ability to repay short-term debts",
+            "unit": "ratio",
+            "priority": "high"
+          },
+          {
+            "name": "Debt/Equity",
+            "formula": "total_liability / equity",
+            "description": "Debt ratio",
+            "unit": "ratio",
+            "priority": "medium"
+          },
+          {
+            "name": "Financial Autonomy Ratio",
+            "formula": "equity / total_liability",
+            "description": "Share of equity in financing",
+            "unit": "ratio",
+            "priority": "medium"
+          }
+        ],
+        "suggested_charts": [
+          {
+            "type": "bar",
+            "title": "Assets vs Liabilities Evolution",
+            "axis_x": "date",
+            "axis_y": ["total_asset", "total_liability"],
+            "description": "Comparison of assets and liabilities evolution over time"
+          },
+          {
+            "type": "pie",
+            "title": "Assets Distribution",
+            "data": "current_asset, fixed_asset",
+            "description": "Distribution between current and fixed assets"
+          }
+        ]
+      }
+    },
+    "income_statement": {
+      "description": "Income statement with Revenue and Expenses",
+      "indicators": {
+        "required_columns": ["revenue", "expense", "date"],
+        "optional_columns": ["category", "month", "year", "revenue_total", "cost", "margin"],
+        "kpis": [
+          {
+            "name": "Total Revenue",
+            "formula": "SUM(revenue)",
+            "description": "Total revenue for the period",
+            "unit": "$",
+            "priority": "high"
+          },
+          {
+            "name": "Gross Margin",
+            "formula": "(SUM(revenue) - SUM(expense)) / SUM(revenue) * 100",
+            "description": "Margin percentage",
+            "unit": "%",
+            "priority": "high"
+          },
+          {
+            "name": "MoM Growth",
+            "formula": "((revenue_month_n - revenue_month_n-1) / revenue_month_n-1) * 100",
+            "description": "Monthly growth",
+            "unit": "%",
+            "priority": "medium"
+          },
+          {
+            "name": "Net Income",
+            "formula": "SUM(revenue) - SUM(expense)",
+            "description": "Net profit or loss",
+            "unit": "$",
+            "priority": "high"
+          },
+          {
+            "name": "Top 5 Expenses",
+            "formula": "TOP(5, SUM(expense) GROUP BY category)",
+            "description": "Top 5 expenses by category",
+            "unit": "$",
+            "priority": "medium"
+          }
+        ],
+        "suggested_charts": [
+          {
+            "type": "line",
+            "title": "Revenue Evolution",
+            "axis_x": "date",
+            "axis_y": "revenue",
+            "description": "Revenue trend over time"
+          },
+          {
+            "type": "bar",
+            "title": "Top 10 Expenses",
+            "group_by": "category",
+            "aggregation": "SUM(expense)",
+            "description": "Main expenses by category"
+          },
+          {
+            "type": "pie",
+            "title": "Expenses Distribution",
+            "group_by": "category",
+            "aggregation": "SUM(expense)",
+            "description": "Proportional distribution of expenses"
+          }
+        ]
+      }
+    },
+    "general_ledger": {
+      "description": "General ledger with transactions",
+      "indicators": {
+        "required_columns": ["date", "amount", "type"],
+        "optional_columns": ["category", "description", "account", "debit", "credit", "balance"],
+        "kpis": [
+          {
+            "name": "Total Balance",
+            "formula": "SUM(amount WHERE type='credit') - SUM(amount WHERE type='debit')",
+            "description": "Net accounting balance",
+            "unit": "$",
+            "priority": "high"
+          },
+          {
+            "name": "Top 5 Expenses",
+            "formula": "TOP(5, SUM(amount) GROUP BY category WHERE type='debit')",
+            "description": "Top 5 expenses by category",
+            "unit": "$",
+            "priority": "high"
+          },
+          {
+            "name": "Top 5 Revenues",
+            "formula": "TOP(5, SUM(amount) GROUP BY category WHERE type='credit')",
+            "description": "Top 5 revenues by category",
+            "unit": "$",
+            "priority": "high"
+          },
+          {
+            "name": "Number of Transactions",
+            "formula": "COUNT(*)",
+            "description": "Total number of transactions",
+            "unit": "count",
+            "priority": "medium"
+          }
+        ],
+        "suggested_charts": [
+          {
+            "type": "bar",
+            "title": "Distribution by Category",
+            "group_by": "category",
+            "aggregation": "SUM(amount)",
+            "description": "Amount distribution by category"
+          },
+          {
+            "type": "line",
+            "title": "Balance Evolution",
+            "axis_x": "date",
+            "axis_y": "balance",
+            "description": "Balance evolution over time"
+          }
+        ]
+      }
+    },
+    "cash_flow": {
+      "description": "Cash flow statement",
+      "indicators": {
+        "required_columns": ["date", "flow", "flow_type"],
+        "optional_columns": ["category", "inflow", "outflow", "balance", "operation", "investment", "financing"],
+        "kpis": [
+          {
+            "name": "Net Cash",
+            "formula": "SUM(inflow) - SUM(outflow)",
+            "description": "Net cash flow",
+            "unit": "$",
+            "priority": "high"
+          },
+          {
+            "name": "Operating Flow",
+            "formula": "SUM(flow WHERE flow_type='operating')",
+            "description": "Flows generated by operational activity",
+            "unit": "$",
+            "priority": "high"
+          },
+          {
+            "name": "Investment Flow",
+            "formula": "SUM(flow WHERE flow_type='investment')",
+            "description": "Flows related to investments",
+            "unit": "$",
+            "priority": "medium"
+          },
+          {
+            "name": "Cash Trend",
+            "formula": "TREND(balance, date)",
+            "description": "General cash trend",
+            "unit": "trend",
+            "priority": "medium"
+          }
+        ],
+        "suggested_charts": [
+          {
+            "type": "line",
+            "title": "Cash Evolution",
+            "axis_x": "date",
+            "axis_y": "balance",
+            "description": "Cash balance evolution over time"
+          },
+          {
+            "type": "bar",
+            "title": "Flows by Type",
+            "group_by": "flow_type",
+            "aggregation": "SUM(flow)",
+            "description": "Flow distribution by type (operating, investment, financing)"
+          }
+        ]
+      }
+    },
+    "portfolio": {
+      "description": "Stock portfolio or investments",
+      "indicators": {
+        "required_columns": ["ticker", "quantity", "price"],
+        "optional_columns": ["date", "value", "return", "dividend", "category", "sector"],
+        "kpis": [
+          {
+            "name": "Total Portfolio Value",
+            "formula": "SUM(quantity * price)",
+            "description": "Total investment value",
+            "unit": "$",
+            "priority": "high"
+          },
+          {
+            "name": "Average Return",
+            "formula": "AVG(return)",
+            "description": "Average portfolio return",
+            "unit": "%",
+            "priority": "high"
+          },
+          {
+            "name": "Total Dividends",
+            "formula": "SUM(dividend)",
+            "description": "Total dividends received",
+            "unit": "$",
+            "priority": "medium"
+          },
+          {
+            "name": "Diversification",
+            "formula": "COUNT(DISTINCT category) / COUNT(*)",
+            "description": "Portfolio diversification measure",
+            "unit": "ratio",
+            "priority": "medium"
+          }
+        ],
+        "suggested_charts": [
+          {
+            "type": "pie",
+            "title": "Distribution by Category",
+            "group_by": "category",
+            "aggregation": "SUM(value)",
+            "description": "Portfolio distribution by category"
+          },
+          {
+            "type": "bar",
+            "title": "Top 10 Positions",
+            "group_by": "ticker",
+            "aggregation": "SUM(value)",
+            "description": "Top 10 portfolio positions"
+          }
+        ]
+      }
+    },
+    "invoices": {
+      "description": "Invoice list",
+      "indicators": {
+        "required_columns": ["amount", "date"],
+        "optional_columns": ["client", "number", "status", "vat", "excl_tax", "incl_tax", "due_date"],
+        "kpis": [
+          {
+            "name": "Invoiced Revenue",
+            "formula": "SUM(amount WHERE status='paid')",
+            "description": "Total paid invoices",
+            "unit": "$",
+            "priority": "high"
+          },
+          {
+            "name": "Pending Invoices",
+            "formula": "SUM(amount WHERE status='pending')",
+            "description": "Total amount of unpaid invoices",
+            "unit": "$",
+            "priority": "high"
+          },
+          {
+            "name": "Average Payment Delay",
+            "formula": "AVG(payment_date - issue_date)",
+            "description": "Average payment delay",
+            "unit": "days",
+            "priority": "medium"
+          },
+          {
+            "name": "Collection Rate",
+            "formula": "COUNT(status='paid') / COUNT(*) * 100",
+            "description": "Percentage of paid invoices",
+            "unit": "%",
+            "priority": "medium"
+          }
+        ],
+        "suggested_charts": [
+          {
+            "type": "bar",
+            "title": "Invoices by Status",
+            "group_by": "status",
+            "aggregation": "SUM(amount)",
+            "description": "Invoice distribution by payment status"
+          },
+          {
+            "type": "line",
+            "title": "Invoiced Revenue Evolution",
+            "axis_x": "date",
+            "axis_y": "amount",
+            "description": "Invoiced revenue evolution over time"
+          }
+        ]
+      }
+    }
+  },
+  "detection_rules": {
+    "balance_sheet": {
+      "column_keywords": ["asset", "liability", "balance", "current_asset", "current_liability", "fixed_asset", "equity"],
+      "file_keywords": ["balance", "sheet", "balance_sheet"],
+      "min_columns_match": 2,
+      "score_boost": 1.5
+    },
+    "income_statement": {
+      "column_keywords": ["revenue", "income", "expense", "cost", "margin", "profit", "loss"],
+      "file_keywords": ["income", "statement", "profit", "loss", "p&l", "pnl"],
+      "min_columns_match": 2,
+      "score_boost": 1.5
+    },
+    "general_ledger": {
+      "column_keywords": ["amount", "debit", "credit", "account", "transaction", "entry", "balance"],
+      "file_keywords": ["ledger", "accounting", "book"],
+      "min_columns_match": 2,
+      "score_boost": 1.2
+    },
+    "cash_flow": {
+      "column_keywords": ["flow", "cash", "inflow", "outflow", "operation", "investment", "financing"],
+      "file_keywords": ["cash", "flow", "treasury"],
+      "min_columns_match": 2,
+      "score_boost": 1.3
+    },
+    "portfolio": {
+      "column_keywords": ["ticker", "stock", "quantity", "price", "value", "return", "dividend", "portfolio"],
+      "file_keywords": ["portfolio", "stocks", "investments"],
+      "min_columns_match": 2,
+      "score_boost": 1.2
+    },
+    "invoices": {
+      "column_keywords": ["invoice", "amount", "client", "number", "status", "vat", "tax"],
+      "file_keywords": ["invoice", "billing", "invoices"],
+      "min_columns_match": 2,
+      "score_boost": 1.2
+    }
+  },
+  "standard_charts": {
+    "time_evolution": {
+      "description": "Time evolution chart",
+      "required": ["date_column", "value_column"],
+      "type": "line",
+      "recommendations": "Use to show trends and evolutions"
+    },
+    "distribution": {
+      "description": "Distribution chart",
+      "required": ["category_column", "value_column"],
+      "type": "pie",
+      "recommendations": "Use to show proportions and market shares"
+    },
+    "comparison": {
+      "description": "Comparison chart",
+      "required": ["category_column", "value_column"],
+      "type": "bar",
+      "recommendations": "Use to compare values between categories"
+    }
+  }
+}
